@@ -56,8 +56,9 @@ export async function fetchRedditComments(
   }
 
   try {
-    // Fetch directly from Reddit to avoid IP blocking on serverless
-    const url = `https://www.reddit.com${permalink}.json?raw_json=1`;
+    // Use CORS proxy to avoid both CORS issues and IP blocking
+    const redditUrl = `https://www.reddit.com${permalink}.json?raw_json=1`;
+    const url = `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`;
     const response = await fetch(url);
 
     if (!response.ok) {

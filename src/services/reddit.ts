@@ -30,17 +30,19 @@ export async function fetchRedditPosts(
   // Join multiple subreddits with +
   const subString = subreddits.join('+');
 
-  // Fetch directly from Reddit's JSON API from the client
-  // This avoids IP blocking that happens with serverless functions
-  let url = `https://www.reddit.com/r/${subString}/${sort}.json?limit=${limit}&raw_json=1`;
+  // Build Reddit URL
+  let redditUrl = `https://www.reddit.com/r/${subString}/${sort}.json?limit=${limit}&raw_json=1`;
   
   if (after) {
-    url += `&after=${after}`;
+    redditUrl += `&after=${after}`;
   }
   
   if (sort === 'top') {
-    url += `&t=${timeframe}`;
+    redditUrl += `&t=${timeframe}`;
   }
+
+  // Use CORS proxy to avoid both CORS issues and IP blocking
+  const url = `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`;
 
   try {
     const response = await fetch(url);
