@@ -12,13 +12,12 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const REDDIT_BASE_URL = 'https://old.reddit.com';
-    const url = `${REDDIT_BASE_URL}${permalink}.json?raw_json=1`;
+    const url = `https://www.reddit.com${permalink}.json?raw_json=1`;
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'web:reddit-music-player:v1.0.0 (by /u/redditmusicplayer)',
-        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',
       },
       next: { revalidate: 300 }, // Cache for 5 minutes
