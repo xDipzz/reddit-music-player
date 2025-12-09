@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const REDDIT_BASE_URL = 'https://www.reddit.com';
+    const REDDIT_BASE_URL = 'https://old.reddit.com';
     const url = `${REDDIT_BASE_URL}${permalink}.json?raw_json=1`;
 
     const response = await fetch(url, {

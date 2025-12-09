@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Build Reddit URL
-    const REDDIT_BASE_URL = 'https://www.reddit.com';
+    // Build Reddit URL - use old.reddit.com to avoid rate limits
+    const REDDIT_BASE_URL = 'https://old.reddit.com';
     let url = `${REDDIT_BASE_URL}/r/${subreddits}/${sort}.json?limit=${limit}&raw_json=1`;
     
     if (after) {
