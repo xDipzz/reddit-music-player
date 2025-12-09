@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate SEO Images</title>
+</head>
+<body>
+    <canvas id="ogCanvas" width="1200" height="630"></canvas>
+    <canvas id="icon192Canvas" width="192" height="192"></canvas>
+    <canvas id="icon512Canvas" width="512" height="512"></canvas>
+    
+    <script>
+        // Create OG Image (1200x630)
+        const ogCanvas = document.getElementById('ogCanvas');
+        const ogCtx = ogCanvas.getContext('2d');
+        
+        // Background gradient
+        const ogGradient = ogCtx.createLinearGradient(0, 0, 1200, 630);
+        ogGradient.addColorStop(0, '#0a0a0a');
+        ogGradient.addColorStop(1, '#1a1a1a');
+        ogCtx.fillStyle = ogGradient;
+        ogCtx.fillRect(0, 0, 1200, 630);
+        
+        // Accent
+        ogCtx.fillStyle = '#f97316';
+        ogCtx.fillRect(0, 0, 1200, 10);
+        
+        // Title
+        ogCtx.fillStyle = '#ffffff';
+        ogCtx.font = 'bold 72px Arial';
+        ogCtx.textAlign = 'center';
+        ogCtx.fillText('Reddit Music Player', 600, 280);
+        
+        // Subtitle
+        ogCtx.fillStyle = '#a0a0a0';
+        ogCtx.font = '36px Arial';
+        ogCtx.fillText('Stream Music from Reddit', 600, 350);
+        
+        // Icon (simplified music note)
+        ogCtx.fillStyle = '#f97316';
+        ogCtx.beginPath();
+        ogCtx.arc(600, 450, 40, 0, Math.PI * 2);
+        ogCtx.fill();
+        ogCtx.fillRect(630, 400, 15, 60);
+        ogCtx.beginPath();
+        ogCtx.arc(645, 400, 20, 0, Math.PI * 2);
+        ogCtx.fill();
+        
+        console.log('OG Image Canvas created. Save as PNG (1200x630)');
+        
+        // Create Icon 192x192
+        const icon192Canvas = document.getElementById('icon192Canvas');
+        const icon192Ctx = icon192Canvas.getContext('2d');
+        
+        const icon192Gradient = icon192Ctx.createLinearGradient(0, 0, 192, 192);
+        icon192Gradient.addColorStop(0, '#f97316');
+        icon192Gradient.addColorStop(1, '#ea580c');
+        icon192Ctx.fillStyle = icon192Gradient;
+        icon192Ctx.fillRect(0, 0, 192, 192);
+        
+        icon192Ctx.fillStyle = '#ffffff';
+        icon192Ctx.beginPath();
+        icon192Ctx.arc(96, 120, 25, 0, Math.PI * 2);
+        icon192Ctx.fill();
+        icon192Ctx.fillRect(115, 80, 10, 45);
+        icon192Ctx.beginPath();
+        icon192Ctx.arc(120, 75, 15, 0, Math.PI * 2);
+        icon192Ctx.fill();
+        
+        console.log('Icon 192 Canvas created. Save as PNG (192x192)');
+        
+        // Create Icon 512x512
+        const icon512Canvas = document.getElementById('icon512Canvas');
+        const icon512Ctx = icon512Canvas.getContext('2d');
+        
+        const icon512Gradient = icon512Ctx.createLinearGradient(0, 0, 512, 512);
+        icon512Gradient.addColorStop(0, '#f97316');
+        icon512Gradient.addColorStop(1, '#ea580c');
+        icon512Ctx.fillStyle = icon512Gradient;
+        icon512Ctx.fillRect(0, 0, 512, 512);
+        
+        icon512Ctx.fillStyle = '#ffffff';
+        icon512Ctx.beginPath();
+        icon512Ctx.arc(256, 320, 70, 0, Math.PI * 2);
+        icon512Ctx.fill();
+        icon512Ctx.fillRect(310, 210, 30, 125);
+        icon512Ctx.beginPath();
+        icon512Ctx.arc(325, 200, 45, 0, Math.PI * 2);
+        icon512Ctx.fill();
+        
+        console.log('Icon 512 Canvas created. Save as PNG (512x512)');
+        
+        // Instructions
+        document.body.innerHTML += '<h2>Right-click each canvas and "Save Image As...":</h2>';
+        document.body.innerHTML += '<p>1. First canvas → save as "og-image.png"</p>';
+        document.body.innerHTML += '<p>2. Second canvas → save as "icon-192.png"</p>';
+        document.body.innerHTML += '<p>3. Third canvas → save as "icon-512.png"</p>';
+    </script>
+</body>
+</html>

@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎵 Reddit Music Player
 
-## Getting Started
+Modern music player powered by Reddit. Browse subreddits, play YouTube videos, discover new music.
 
-First, run the development server:
+## 🚀 Quick Start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**That's it! No API keys needed.** ✅
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Features
 
-## Learn More
+- 🎧 Browse 50+ music subreddits
+- ▶️ YouTube video playback
+- 🔍 Real-time search (⌘K)
+- 💬 Reddit comments view
+- 🎵 Queue management
+- ⌨️ Keyboard shortcuts
+- 🌙 Dark theme
+- 📱 Mobile responsive
+- 🔄 State persistence
 
-To learn more about Next.js, take a look at the following resources:
+## 🎹 Keyboard Shortcuts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Space** - Play/Pause
+- **→ / ←** - Seek forward/backward 5s
+- **Shift + → / ←** - Next/Previous track
+- **↑ / ↓** - Volume up/down
+- **M** - Mute
+- **S** - Shuffle
+- **R** - Repeat
+- **⌘K** - Search
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Tech Stack
 
-## Deploy on Vercel
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **UI Components:** shadcn/ui
+- **State:** Zustand
+- **Data Fetching:** React Query
+- **APIs:** Reddit JSON API (public), YouTube IFrame API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📦 Build
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run build
+npm start
+```
+
+## 🌐 Deploy
+
+### Vercel (Recommended)
+```bash
+vercel
+```
+
+### Docker
+```bash
+docker build -t reddit-music-player .
+docker run -p 3000:3000 reddit-music-player
+```
+
+See `PRODUCTION.md` for detailed deployment instructions.
+
+## 📝 Environment Variables
+
+**None required!** App works out-of-the-box.
+
+Optional for production:
+```bash
+NEXT_PUBLIC_APP_URL=https://your-domain.com  # Recommended for SEO
+```
+
+See `.env.example` for all optional variables.
+
+## 🔧 Troubleshooting
+
+### Dev server won't start
+```bash
+pkill -f "next dev"
+rm -rf .next/dev
+npm run dev
+```
+
+### Clear everything
+```bash
+rm -rf .next node_modules
+npm install
+npm run build
+```
+
+## 📄 License
+
+GPLv3
+
+---
+
+**Modern rebuild of [reddit.musicplayer.io](https://reddit.musicplayer.io)**
