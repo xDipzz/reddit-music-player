@@ -30,23 +30,17 @@ export async function fetchRedditPosts(
   // Join multiple subreddits with +
   const subString = subreddits.join('+');
 
-  // Use our Next.js API route instead of calling Reddit directly
-  // This avoids CORS issues
-  const params = new URLSearchParams({
-    subreddits: subString,
-    sort,
-    limit: limit.toString(),
-  });
-
+  // Fetch directly from Reddit's JSON API from the client
+  // This avoids IP blocking that happens with serverless functions
+  let url = `https://www.reddit.com/r/${subString}/${sort}.json?limit=${limit}&raw_json=1`;
+  
   if (after) {
-    params.append('after', after);
+    url += `&after=${after}`;
   }
-
+  
   if (sort === 'top') {
-    params.append('t', timeframe);
+    url += `&t=${timeframe}`;
   }
-
-  const url = `/api/reddit?${params.toString()}`;
 
   try {
     const response = await fetch(url);

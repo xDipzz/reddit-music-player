@@ -56,9 +56,8 @@ export async function fetchRedditComments(
   }
 
   try {
-    // Use our Next.js API route instead of calling Reddit directly
-    const params = new URLSearchParams({ permalink });
-    const url = `/api/reddit-comments?${params.toString()}`;
+    // Fetch directly from Reddit to avoid IP blocking on serverless
+    const url = `https://www.reddit.com${permalink}.json?raw_json=1`;
     const response = await fetch(url);
 
     if (!response.ok) {
