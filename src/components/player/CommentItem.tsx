@@ -71,7 +71,7 @@ export function CommentItem({ comment, level = 0 }: CommentItemProps) {
             {comment.score}
           </span>
           
-          <span className="text-neutral-500">
+          <span className="text-neutral-500" suppressHydrationWarning>
             {formatTimeAgo(comment.created_utc)}
           </span>
 

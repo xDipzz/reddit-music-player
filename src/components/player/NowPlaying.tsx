@@ -3,6 +3,7 @@
 import { usePlayerStore } from '@/stores';
 import { usePlayerController } from '@/hooks/usePlayerController';
 import { formatNumber } from '@/lib/utils/format';
+import { Icon } from '@/components/ui/Icon';
 
 export function NowPlaying() {
   const { currentSong, isPlaying } = usePlayerStore();
@@ -22,7 +23,7 @@ export function NowPlaying() {
           {albumArt ? (
             <img src={albumArt} alt={title} className="w-full h-full object-cover rounded" />
           ) : (
-            <span className="iconify text-neutral-600" data-icon="lucide:music" data-width="20"></span>
+            <Icon icon="lucide:music" width="20" className="text-neutral-600" />
           )}
         </div>
       </div>
@@ -43,11 +44,7 @@ export function NowPlaying() {
         className="md:hidden w-8 h-8 rounded-full bg-white text-black flex items-center justify-center"
         onClick={controller.togglePlayPause}
       >
-        <span
-          className="iconify"
-          data-icon={isPlaying ? 'lucide:pause' : 'lucide:play'}
-          data-width="16"
-        ></span>
+        <Icon icon={isPlaying ? 'lucide:pause' : 'lucide:play'} width="16" />
       </button>
     </div>
   );

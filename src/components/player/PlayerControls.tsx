@@ -3,6 +3,7 @@
 import { ProgressBar } from './ProgressBar';
 import { usePlayerStore } from '@/stores';
 import { usePlayerController } from '@/hooks/usePlayerController';
+import { Icon } from '@/components/ui/Icon';
 
 export function PlayerControls() {
   const { isPlaying, isShuffled, repeatMode } = usePlayerStore();
@@ -25,33 +26,28 @@ export function PlayerControls() {
             toggleShuffle();
           }}
         >
-          <span className="iconify" data-icon="lucide:shuffle" data-width="16" data-stroke-width="1.5"></span>
+          <Icon icon="lucide:shuffle" width="16" strokeWidth="1.5" />
         </button>
         <button
           id="prevBtn"
           className="text-neutral-200 hover:text-white transition-colors"
           onClick={controller.playPrevious}
         >
-          <span className="iconify" data-icon="lucide:skip-back" data-width="20" data-stroke-width="1.5"></span>
+          <Icon icon="lucide:skip-back" width="20" strokeWidth="1.5" />
         </button>
         <button
           id="playPauseBtn"
           className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform shadow shadow-white/10"
           onClick={controller.togglePlayPause}
         >
-          <span
-            className="iconify"
-            data-icon={isPlaying ? 'lucide:pause' : 'lucide:play'}
-            data-width="18"
-            data-stroke-width="1.5"
-          ></span>
+          <Icon icon={isPlaying ? 'lucide:pause' : 'lucide:play'} width="18" strokeWidth="1.5" />
         </button>
         <button
           id="nextBtn"
           className="text-neutral-200 hover:text-white transition-colors"
           onClick={controller.playNext}
         >
-          <span className="iconify" data-icon="lucide:skip-forward" data-width="20" data-stroke-width="1.5"></span>
+          <Icon icon="lucide:skip-forward" width="20" strokeWidth="1.5" />
         </button>
         <button
           id="repeatBtn"
@@ -64,12 +60,7 @@ export function PlayerControls() {
             toggleRepeat();
           }}
         >
-          <span
-            className="iconify"
-            data-icon={mappedRepeatMode === 'one' ? 'lucide:repeat-1' : 'lucide:repeat'}
-            data-width="16"
-            data-stroke-width="1.5"
-          ></span>
+          <Icon icon={mappedRepeatMode === 'one' ? 'lucide:repeat-1' : 'lucide:repeat'} width="16" strokeWidth="1.5" />
         </button>
       </div>
 

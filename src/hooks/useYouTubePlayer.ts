@@ -14,31 +14,31 @@ export function useYouTubePlayer(
 ): YouTubePlayerControls {
   const playerRef = useRef<YT.Player | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const [apiLoaded, setApiLoaded] = useState(false);
+  const apiLoadedRef = useRef(false);
 
-  // Load YouTube IFrame API
   useEffect(() => {
-    // Check if API is already loaded
+    if (apiLoadedRef.current) return;
+    
     if (window.YT && window.YT.Player) {
-      setApiLoaded(true);
+      apiLoadedRef.current = true;
+      initPlayer();
       return;
     }
 
-    // Check if script is already being loaded
     const existingScript = document.querySelector(
       'script[src="https://www.youtube.com/iframe_api"]'
     );
     if (existingScript) {
-      // Script exists, wait for it to load
       window.onYouTubeIframeAPIReady = () => {
-        setApiLoaded(true);
+        apiLoadedRef.current = true;
+        initPlayer();
       };
       return;
     }
 
-    // Load the API
     window.onYouTubeIframeAPIReady = () => {
-      setApiLoaded(true);
+      apiLoadedRef.current = true;
+      initPlayer();
     };
 
     const script = document.createElement('script');
@@ -46,71 +46,51 @@ export function useYouTubePlayer(
     script.async = true;
     document.head.appendChild(script);
 
-    return () => {
-      // Cleanup: remove the global callback
-      if (window.onYouTubeIframeAPIReady) {
-        window.onYouTubeIframeAPIReady = undefined as any;
+    function initPlayer() {
+      if (playerRef.current) return;
+
+      const handleReady = (event: YT.PlayerEvent) => {
+        playerRef.current = event.target;
+        setIsReady(true);
+        if (options.initialVolume !== undefined) {
+          event.target.setVolume(options.initialVolume * 100);
+        }
+        options.onReady?.();
+      };
+
+      const handleStateChange = (event: YT.OnStateChangeEvent) => {
+        options.onStateChange?.(event.data);
+      };
+
+      const handleError = (event: YT.OnErrorEvent) => {
+        console.error('YouTube player error:', event.data);
+        options.onError?.(event.data);
+      };
+
+      try {
+        new window.YT.Player(containerId, {
+          height: '1',
+          width: '1',
+          playerVars: {
+            autoplay: 1,
+            controls: 0,
+            disablekb: 1,
+            enablejsapi: 1,
+            fs: 0,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            playsinline: 1,
+            rel: 0,
+          },
+          events: {
+            onReady: handleReady,
+            onStateChange: handleStateChange,
+            onError: handleError,
+          },
+        });
+      } catch (error) {
+        console.error('Failed to initialize YouTube player:', error);
       }
-    };
-  }, []);
-
-  // Initialize player once API is loaded
-  useEffect(() => {
-    if (!apiLoaded || playerRef.current) return;
-
-    let playerInstance: YT.Player | null = null;
-
-    const handleReady = (event: YT.PlayerEvent) => {
-      console.log('YouTube player ready event fired');
-      
-      // CRITICAL: Store the actual player instance from the event
-      // The player returned from new YT.Player() is not fully initialized
-      playerRef.current = event.target;
-      
-      setIsReady(true);
-      
-      // Set initial volume if provided
-      if (options.initialVolume !== undefined) {
-        event.target.setVolume(options.initialVolume * 100);
-      }
-      
-      options.onReady?.();
-    };
-
-    const handleStateChange = (event: YT.OnStateChangeEvent) => {
-      options.onStateChange?.(event.data);
-    };
-
-    const handleError = (event: YT.OnErrorEvent) => {
-      console.error('YouTube player error:', event.data);
-      options.onError?.(event.data);
-    };
-
-    try {
-      console.log('Creating YouTube player for container:', containerId);
-      // Note: The player instance is not fully ready until onReady fires
-      playerInstance = new window.YT.Player(containerId, {
-        height: '1',
-        width: '1',
-        playerVars: {
-          autoplay: 1,
-          controls: 0,
-          disablekb: 1,
-          enablejsapi: 1,
-          fs: 0,
-          iv_load_policy: 3,
-          modestbranding: 1,
-          playsinline: 1,
-          rel: 0,
-        },
-        events: {
-          onReady: handleReady,
-          onStateChange: handleStateChange,
-          onError: handleError,
-        },
-      });
-    } catch (error) {
-      console.error('Failed to initialize YouTube player:', error);
     }
 
     return () => {
@@ -121,15 +101,9 @@ export function useYouTubePlayer(
           console.error('Error destroying YouTube player:', error);
         }
         playerRef.current = null;
-      } else if (playerInstance) {
-        try {
-          playerInstance.destroy();
-        } catch (error) {
-          console.error('Error destroying YouTube player instance:', error);
-        }
       }
     };
-  }, [apiLoaded, containerId, options]);
+  }, [containerId, options]);
 
   const loadVideo = useCallback((videoId: string) => {
     if (!playerRef.current || !isReady) {

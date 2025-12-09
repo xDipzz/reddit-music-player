@@ -2,6 +2,7 @@
 
 import { usePlayerStore } from '@/stores';
 import { usePlayerController } from '@/hooks/usePlayerController';
+import { Icon } from '@/components/ui/Icon';
 
 export function VolumeControl() {
   const { volume, isMuted } = usePlayerStore();
@@ -31,12 +32,7 @@ export function VolumeControl() {
           toggleMute();
         }}
       >
-        <span
-          className="iconify"
-          data-icon={getVolumeIcon()}
-          data-width="18"
-          data-stroke-width="1.5"
-        ></span>
+        <Icon icon={getVolumeIcon()} width="18" strokeWidth="1.5" />
       </button>
       <div
         className="w-20 h-1 bg-neutral-800 rounded-full overflow-hidden cursor-pointer"
@@ -47,6 +43,7 @@ export function VolumeControl() {
           className="h-full bg-neutral-400 group-hover:bg-white transition-colors"
           id="volumeFill"
           style={{ width: `${isMuted ? 0 : volume * 100}%` }}
+          suppressHydrationWarning
         />
       </div>
     </div>

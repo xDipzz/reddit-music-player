@@ -44,7 +44,9 @@ export function CommentsButton({ onClick }: CommentsButtonProps) {
           'text-[10px] font-bold rounded-full',
           'bg-orange-500 text-white',
           'pointer-events-none'
-        )}>
+        )}
+        suppressHydrationWarning
+        >
           {currentSong.numComments > 99 ? '99+' : currentSong.numComments}
         </span>
       )}

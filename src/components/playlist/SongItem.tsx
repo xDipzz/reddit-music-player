@@ -125,7 +125,7 @@ export function SongItem({ song, index, isActive, isPlaying, onClick }: SongItem
       </div>
 
       {/* Time Ago */}
-      <div className="text-xs text-neutral-400 text-right font-mono">
+      <div className="text-xs text-neutral-400 text-right font-mono" suppressHydrationWarning>
         {formatTimeAgo(song.createdUtc)}
       </div>
     </div>

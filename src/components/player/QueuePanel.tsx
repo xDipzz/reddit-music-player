@@ -9,16 +9,14 @@ import { usePlayerController } from '@/hooks/usePlayerController';
 export function QueuePanel() {
   const { queue, currentIndex, isQueueOpen, toggleQueue, removeFromQueue, clearQueue } =
     usePlaylistStore();
-  const { currentSong, isPlaying } = usePlayerStore();
+  const { isPlaying } = usePlayerStore();
   const controller = usePlayerController();
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Calculate total duration
   const totalDuration = queue.reduce((acc, song) => {
     return acc + (song.duration || 0);
   }, 0);
 
-  // Close on ESC key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isQueueOpen) {
@@ -30,7 +28,6 @@ export function QueuePanel() {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isQueueOpen, toggleQueue]);
 
-  // Close on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -38,7 +35,6 @@ export function QueuePanel() {
         panelRef.current &&
         !panelRef.current.contains(e.target as Node)
       ) {
-        // Check if click is on the queue button itself
         const target = e.target as HTMLElement;
         if (target.closest('#queueBtn')) {
           return;
@@ -48,7 +44,6 @@ export function QueuePanel() {
     };
 
     if (isQueueOpen) {
-      // Delay adding listener to avoid immediate close
       setTimeout(() => {
         document.addEventListener('mousedown', handleClickOutside);
       }, 100);

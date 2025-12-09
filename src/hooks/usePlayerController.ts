@@ -36,8 +36,6 @@ export function usePlayerController(): PlayerController {
     songs,
     currentIndex,
     setCurrentIndex,
-    playNext: getNextIndex,
-    playPrevious: getPreviousIndex,
     shuffleQueue,
     unshuffleQueue,
   } = usePlaylistStore();

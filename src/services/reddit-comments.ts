@@ -1,19 +1,8 @@
-import { REDDIT_BASE_URL } from '@/lib/constants';
 import type { RedditComment, RedditCommentData } from '@/types';
 
-// ─────────────────────────────────────────────────────────────────
-// REDDIT COMMENTS API SERVICE
-// ─────────────────────────────────────────────────────────────────
-
-/**
- * Parses nested comment structure from Reddit API response
- * @param commentData - Raw comment data from Reddit
- * @returns Parsed comment with nested replies
- */
 function parseComment(commentData: RedditCommentData): RedditComment | null {
   const { data } = commentData;
 
-  // Skip "more" comments and deleted/removed comments
   if (commentData.kind === 'more' || !data.body) {
     return null;
   }
@@ -29,7 +18,6 @@ function parseComment(commentData: RedditCommentData): RedditComment | null {
     permalink: data.permalink,
   };
 
-  // Parse nested replies
   if (data.replies && typeof data.replies === 'object') {
     const replies = data.replies.data.children
       .map(parseComment)
@@ -43,11 +31,6 @@ function parseComment(commentData: RedditCommentData): RedditComment | null {
   return comment;
 }
 
-/**
- * Fetches comments for a Reddit post
- * @param permalink - Reddit post permalink (e.g., "/r/subreddit/comments/xyz/title")
- * @returns Array of top-level comments
- */
 export async function fetchRedditComments(
   permalink: string
 ): Promise<RedditComment[]> {
@@ -56,9 +39,8 @@ export async function fetchRedditComments(
   }
 
   try {
-    // Use CORS proxy to avoid both CORS issues and IP blocking
-    const redditUrl = `https://www.reddit.com${permalink}.json?raw_json=1`;
-    const url = `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`;
+    const params = new URLSearchParams({ permalink });
+    const url = `/api/reddit-comments?${params.toString()}`;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -67,7 +49,6 @@ export async function fetchRedditComments(
 
     const data = await response.json();
 
-    // Reddit returns an array with [post_data, comments_data]
     if (!Array.isArray(data) || data.length < 2) {
       return [];
     }
@@ -77,7 +58,6 @@ export async function fetchRedditComments(
       return [];
     }
 
-    // Parse all top-level comments
     const comments = commentsListing.data.children
       .map(parseComment)
       .filter((c: RedditComment | null): c is RedditComment => c !== null);

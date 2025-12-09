@@ -20,11 +20,13 @@ interface SubredditState {
   setExpandedCategories: (categories: Set<string>) => void;
 }
 
+const DEFAULT_SUBREDDITS = ['listentothis', 'music'];
+
 export const useSubredditStore = create<SubredditState>()(
   persist(
     (set) => ({
-      // Initial state
-      selectedSubreddits: [],
+      // Initial state - start with default subreddits so users see content immediately
+      selectedSubreddits: DEFAULT_SUBREDDITS,
       sortMethod: 'hot',
       topTimeframe: 'week',
       expandedCategories: new Set(['General']),

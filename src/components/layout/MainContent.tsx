@@ -13,10 +13,9 @@ import type { Song } from '@/types';
 
 export function MainContent() {
   const { selectedSubreddits, sortMethod, topTimeframe } = useSubredditStore();
-  const { songs, setSongs, addSongs, setQueue } = usePlaylistStore();
+  const { songs, setSongs, setQueue } = usePlaylistStore();
   const { playSong } = usePlayerController();
 
-  // Fetch Reddit posts using React Query
   const {
     data,
     isLoading,
@@ -31,13 +30,11 @@ export function MainContent() {
     enabled: selectedSubreddits.length > 0,
   });
 
-  // Flatten all pages into a single array of songs
   const allSongs = useMemo(() => {
     if (!data?.pages) return [];
     return data.pages.flatMap((page) => page.songs);
   }, [data]);
 
-  // Update playlist store when songs change
   useEffect(() => {
     setSongs(allSongs);
   }, [allSongs, setSongs]);

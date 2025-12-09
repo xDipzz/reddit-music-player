@@ -7,7 +7,6 @@ import { usePlaylistStore } from "@/stores";
 import { SUBREDDIT_CATEGORIES } from "@/lib/constants";
 import SearchResults from "./SearchResults";
 
-// Debounce helper
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -30,7 +29,6 @@ export default function Header() {
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const {
-    query,
     isOpen,
     setQuery,
     search,
@@ -44,13 +42,10 @@ export default function Header() {
 
   const { songs } = usePlaylistStore();
 
-  // Debounce search query (300ms)
   const debouncedQuery = useDebounce(searchQuery, 300);
 
-  // Perform search when debounced query changes
   useEffect(() => {
     if (debouncedQuery.trim().length >= 2) {
-      // Get all available subreddits from categories
       const availableSubreddits = Object.values(SUBREDDIT_CATEGORIES).flatMap(
         (category) => category.subreddits
       );
@@ -61,7 +56,6 @@ export default function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery, songs]);
 
-  // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
