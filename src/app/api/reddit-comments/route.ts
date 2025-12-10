@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Force Node.js runtime (not Edge) for Reddit API compatibility
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // EXACT replication of original reddit.musicplayer.io proxy strategy
 // Only passes user-agent header, matching original exactly
 
