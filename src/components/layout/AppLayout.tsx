@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { usePlaylistStore } from '@/stores';
 import { useKeyboardShortcuts } from '@/hooks';
 
 interface AppLayoutProps {
@@ -9,7 +8,6 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const { isQueueOpen } = usePlaylistStore();
   useKeyboardShortcuts();
 
   return (

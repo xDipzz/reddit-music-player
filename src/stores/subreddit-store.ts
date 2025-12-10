@@ -14,6 +14,7 @@ interface SubredditState {
   removeSubreddit: (subreddit: string) => void;
   toggleSubreddit: (subreddit: string) => void;
   clearSubreddits: () => void;
+  setSubreddits: (subreddits: string[]) => void;
   setSortMethod: (method: SortMethod) => void;
   setTopTimeframe: (timeframe: TopTimeframe) => void;
   toggleCategory: (category: string) => void;
@@ -58,6 +59,11 @@ export const useSubredditStore = create<SubredditState>()(
           selectedSubreddits: [],
         }),
 
+      setSubreddits: (subreddits) =>
+        set({
+          selectedSubreddits: subreddits,
+        }),
+
       setSortMethod: (method) =>
         set({
           sortMethod: method,
@@ -86,18 +92,17 @@ export const useSubredditStore = create<SubredditState>()(
     }),
     {
       name: 'rmp-subreddits',
-      // Custom storage to handle Set serialization
       partialize: (state) => ({
         selectedSubreddits: state.selectedSubreddits,
         sortMethod: state.sortMethod,
         topTimeframe: state.topTimeframe,
         expandedCategories: Array.from(state.expandedCategories),
       }),
-      merge: (persistedState: any, currentState) => ({
+      merge: (persistedState, currentState) => ({
         ...currentState,
-        ...persistedState,
+        ...(persistedState as Record<string, unknown>),
         expandedCategories: new Set(
-          persistedState?.expandedCategories || ['General']
+          (persistedState as { expandedCategories?: string[] })?.expandedCategories || ['General']
         ),
       }),
     }

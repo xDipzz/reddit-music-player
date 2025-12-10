@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { icons } from 'lucide-react';
+import type { LucideProps } from 'lucide-react';
 
 interface IconProps {
   icon: string;
@@ -10,44 +11,76 @@ interface IconProps {
   strokeWidth?: string | number;
 }
 
+// Map of common icon names to Lucide icon names
+const iconMap: Record<string, string> = {
+  'lucide:music': 'Music',
+  'lucide:play': 'Play',
+  'lucide:pause': 'Pause',
+  'lucide:skip-back': 'SkipBack',
+  'lucide:skip-forward': 'SkipForward',
+  'lucide:shuffle': 'Shuffle',
+  'lucide:repeat': 'Repeat',
+  'lucide:repeat-1': 'Repeat1',
+  'lucide:volume': 'Volume2',
+  'lucide:volume-2': 'Volume2',
+  'lucide:volume-x': 'VolumeX',
+  'lucide:volume-1': 'Volume1',
+  'lucide:list': 'List',
+  'lucide:list-music': 'ListMusic',
+  'lucide:message-square': 'MessageSquare',
+  'lucide:x': 'X',
+  'lucide:chevron-right': 'ChevronRight',
+  'lucide:chevron-down': 'ChevronDown',
+  'lucide:chevron-up': 'ChevronUp',
+  'lucide:zap': 'Zap',
+  'lucide:mic-vocal': 'Mic',
+  'lucide:guitar': 'Guitar',
+  'lucide:flame': 'Flame',
+  'lucide:clock': 'Clock',
+  'lucide:trending-up': 'TrendingUp',
+  'lucide:cloud': 'Cloud',
+  'lucide:plus': 'Plus',
+  'lucide:check': 'Check',
+  'lucide:house': 'House',
+  'lucide:search': 'Search',
+  'lucide:library': 'Library',
+  'lucide:refresh-cw': 'RefreshCw',
+  'lucide:bell': 'Bell',
+};
+
 export function Icon({ icon, width = '24', height, className = '', strokeWidth }: IconProps) {
-  const spanRef = useRef<HTMLSpanElement>(null);
-  const initializedRef = useRef(false);
+  // Get the icon name from the map
+  const iconName = iconMap[icon] || icon.replace('lucide:', '');
+  
+  // Get the icon component from lucide-react
+  const LucideIcon = icons[iconName as keyof typeof icons];
 
-  useEffect(() => {
-    if (spanRef.current && !initializedRef.current) {
-      initializedRef.current = true;
-      spanRef.current.setAttribute('data-icon', icon);
-      spanRef.current.setAttribute('data-width', String(width));
-      if (height) spanRef.current.setAttribute('data-height', String(height));
-      if (strokeWidth) spanRef.current.setAttribute('data-stroke-width', String(strokeWidth));
-      
-      const win = window as Window & { Iconify?: { scan: (el: HTMLElement) => void } };
-      if (win.Iconify) {
-        win.Iconify.scan(spanRef.current);
-      }
-    }
-  }, [icon, width, height, strokeWidth]);
+  // If icon not found, return a placeholder
+  if (!LucideIcon) {
+    console.warn(`Icon "${icon}" not found in lucide-react`);
+    return (
+      <span
+        className={className}
+        style={{
+          width: Number(width),
+          height: Number(height || width),
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      />
+    );
+  }
 
-  useEffect(() => {
-    if (spanRef.current && initializedRef.current) {
-      spanRef.current.setAttribute('data-icon', icon);
-      spanRef.current.setAttribute('data-width', String(width));
-      if (height) spanRef.current.setAttribute('data-height', String(height));
-      if (strokeWidth) spanRef.current.setAttribute('data-stroke-width', String(strokeWidth));
-      
-      const win = window as Window & { Iconify?: { scan: (el: HTMLElement) => void } };
-      if (win.Iconify) {
-        win.Iconify.scan(spanRef.current);
-      }
-    }
-  }, [icon, width, height, strokeWidth]);
+  const iconProps: LucideProps = {
+    size: Number(width),
+    strokeWidth: strokeWidth ? Number(strokeWidth) : undefined,
+    className,
+  };
 
-  return (
-    <span 
-      ref={spanRef} 
-      className={`iconify ${className}`}
-      style={{ width: Number(width), height: Number(height || width), display: 'inline-block' }}
-    />
-  );
+  if (height) {
+    iconProps.style = { height: Number(height) };
+  }
+
+  return <LucideIcon {...iconProps} />;
 }

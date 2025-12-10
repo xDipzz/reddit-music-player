@@ -5,130 +5,115 @@
 declare global {
   interface Window {
     YT: {
-      Player: YT.PlayerConstructor;
-      PlayerState: typeof YT.PlayerState;
+      Player: YTPlayerConstructor;
+      PlayerState: typeof YTPlayerState;
     };
     onYouTubeIframeAPIReady?: () => void;
   }
 }
 
-export namespace YT {
-  export enum PlayerState {
-    UNSTARTED = -1,
-    ENDED = 0,
-    PLAYING = 1,
-    PAUSED = 2,
-    BUFFERING = 3,
-    CUED = 5,
-  }
+export enum YTPlayerState {
+  UNSTARTED = -1,
+  ENDED = 0,
+  PLAYING = 1,
+  PAUSED = 2,
+  BUFFERING = 3,
+  CUED = 5,
+}
 
-  export interface PlayerVars {
-    autoplay?: 0 | 1;
-    cc_load_policy?: 0 | 1;
-    color?: 'red' | 'white';
-    controls?: 0 | 1;
-    disablekb?: 0 | 1;
-    enablejsapi?: 0 | 1;
-    end?: number;
-    fs?: 0 | 1;
-    hl?: string;
-    iv_load_policy?: 1 | 3;
-    list?: string;
-    listType?: 'playlist' | 'search' | 'user_uploads';
-    loop?: 0 | 1;
-    modestbranding?: 0 | 1;
-    origin?: string;
-    playlist?: string;
-    playsinline?: 0 | 1;
-    rel?: 0 | 1;
-    start?: number;
-    widget_referrer?: string;
-  }
+export interface YTPlayerVars {
+  autoplay?: 0 | 1;
+  cc_load_policy?: 0 | 1;
+  color?: 'red' | 'white';
+  controls?: 0 | 1;
+  disablekb?: 0 | 1;
+  enablejsapi?: 0 | 1;
+  end?: number;
+  fs?: 0 | 1;
+  hl?: string;
+  iv_load_policy?: 1 | 3;
+  list?: string;
+  listType?: 'playlist' | 'search' | 'user_uploads';
+  loop?: 0 | 1;
+  modestbranding?: 0 | 1;
+  origin?: string;
+  playlist?: string;
+  playsinline?: 0 | 1;
+  rel?: 0 | 1;
+  start?: number;
+  widget_referrer?: string;
+}
 
-  export interface PlayerOptions {
-    height?: string | number;
-    width?: string | number;
-    videoId?: string;
-    playerVars?: PlayerVars;
-    events?: PlayerEvents;
-  }
+export interface YTPlayerOptions {
+  height?: string | number;
+  width?: string | number;
+  videoId?: string;
+  playerVars?: YTPlayerVars;
+  events?: YTPlayerEvents;
+}
 
-  export interface PlayerEvents {
-    onReady?: (event: PlayerEvent) => void;
-    onStateChange?: (event: OnStateChangeEvent) => void;
-    onError?: (event: OnErrorEvent) => void;
-    onPlaybackQualityChange?: (event: PlayerEvent) => void;
-    onPlaybackRateChange?: (event: PlayerEvent) => void;
-    onApiChange?: (event: PlayerEvent) => void;
-  }
+export interface YTPlayerEvents {
+  onReady?: (event: YTPlayerEvent) => void;
+  onStateChange?: (event: YTOnStateChangeEvent) => void;
+  onError?: (event: YTOnErrorEvent) => void;
+  onPlaybackQualityChange?: (event: YTPlayerEvent) => void;
+  onPlaybackRateChange?: (event: YTPlayerEvent) => void;
+  onApiChange?: (event: YTPlayerEvent) => void;
+}
 
-  export interface PlayerEvent {
-    target: Player;
-  }
+export interface YTPlayerEvent {
+  target: YTPlayer;
+}
 
-  export interface OnStateChangeEvent extends PlayerEvent {
-    data: PlayerState;
-  }
+export interface YTOnStateChangeEvent extends YTPlayerEvent {
+  data: YTPlayerState;
+}
 
-  export interface OnErrorEvent extends PlayerEvent {
-    data: ErrorCode;
-  }
+export interface YTOnErrorEvent extends YTPlayerEvent {
+  data: YTErrorCode;
+}
 
-  export enum ErrorCode {
-    InvalidParam = 2,
-    Html5Error = 5,
-    VideoNotFound = 100,
-    NotAllowed = 101,
-    NotAllowedDisguise = 150,
-  }
+export enum YTErrorCode {
+  InvalidParam = 2,
+  Html5Error = 5,
+  VideoNotFound = 100,
+  NotAllowed = 101,
+  NotAllowedDisguise = 150,
+}
 
-  export interface Player {
-    // Playback controls
-    loadVideoById(videoId: string, startSeconds?: number): void;
-    cueVideoById(videoId: string, startSeconds?: number): void;
-    playVideo(): void;
-    pauseVideo(): void;
-    stopVideo(): void;
-    seekTo(seconds: number, allowSeekAhead: boolean): void;
+export interface YTPlayer {
+  loadVideoById(videoId: string, startSeconds?: number): void;
+  cueVideoById(videoId: string, startSeconds?: number): void;
+  playVideo(): void;
+  pauseVideo(): void;
+  stopVideo(): void;
+  seekTo(seconds: number, allowSeekAhead: boolean): void;
+  setVolume(volume: number): void;
+  getVolume(): number;
+  mute(): void;
+  unMute(): void;
+  isMuted(): boolean;
+  getPlayerState(): YTPlayerState;
+  getCurrentTime(): number;
+  getDuration(): number;
+  getVideoUrl(): string;
+  getVideoEmbedCode(): string;
+  getPlaybackRate(): number;
+  setPlaybackRate(suggestedRate: number): void;
+  getAvailablePlaybackRates(): number[];
+  nextVideo(): void;
+  previousVideo(): void;
+  getPlaylistIndex(): number;
+  getVideoData(): {
+    video_id: string;
+    title: string;
+    author: string;
+  };
+  destroy(): void;
+}
 
-    // Volume controls
-    setVolume(volume: number): void;
-    getVolume(): number;
-    mute(): void;
-    unMute(): void;
-    isMuted(): boolean;
-
-    // Playback status
-    getPlayerState(): PlayerState;
-    getCurrentTime(): number;
-    getDuration(): number;
-    getVideoUrl(): string;
-    getVideoEmbedCode(): string;
-
-    // Playback rate
-    getPlaybackRate(): number;
-    setPlaybackRate(suggestedRate: number): void;
-    getAvailablePlaybackRates(): number[];
-
-    // Playlist controls
-    nextVideo(): void;
-    previousVideo(): void;
-    getPlaylistIndex(): number;
-
-    // Video information
-    getVideoData(): {
-      video_id: string;
-      title: string;
-      author: string;
-    };
-
-    // Player management
-    destroy(): void;
-  }
-
-  export interface PlayerConstructor {
-    new (elementId: string | HTMLElement, options: PlayerOptions): Player;
-  }
+export interface YTPlayerConstructor {
+  new (elementId: string | HTMLElement, options: YTPlayerOptions): YTPlayer;
 }
 
 export interface YouTubePlayerControls {
@@ -139,6 +124,22 @@ export interface YouTubePlayerControls {
   setVolume: (volume: number) => void;
   getCurrentTime: () => number;
   getDuration: () => number;
-  getPlayerState: () => YT.PlayerState | null;
+  getPlayerState: () => YTPlayerState | null;
   isReady: boolean;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace YT {
+  export type PlayerState = YTPlayerState;
+  export const PlayerState = YTPlayerState;
+  export type ErrorCode = YTErrorCode;
+  export const ErrorCode = YTErrorCode;
+  export type Player = YTPlayer;
+  export type PlayerEvent = YTPlayerEvent;
+  export type OnStateChangeEvent = YTOnStateChangeEvent;
+  export type OnErrorEvent = YTOnErrorEvent;
+  export type PlayerConstructor = YTPlayerConstructor;
+  export type PlayerVars = YTPlayerVars;
+  export type PlayerOptions = YTPlayerOptions;
+  export type PlayerEvents = YTPlayerEvents;
 }

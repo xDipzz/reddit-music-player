@@ -75,6 +75,6 @@ export function transformPost(post: RedditPost): Song {
     thumbnail: getBestThumbnail(post),
     youtubeId: ytId,
     duration: null,
-    raw: post,
+    raw: post as unknown as Record<string, unknown>,
   };
 }

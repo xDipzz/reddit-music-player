@@ -51,6 +51,12 @@ export function usePlayerController(): PlayerController {
         return;
       }
 
+      // Validate YouTube ID format (should be 11 characters)
+      if (song.youtubeId.length !== 11) {
+        console.error('Invalid YouTube ID format:', song.youtubeId);
+        return;
+      }
+
       console.log('playSong called:', { 
         song: song.title, 
         youtubeId: song.youtubeId, 

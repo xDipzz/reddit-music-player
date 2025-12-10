@@ -82,7 +82,7 @@ export default function SearchResults({ onClose }: SearchResultsProps) {
           <div className="px-3 py-2 text-xs font-medium text-neutral-500 uppercase tracking-wider bg-neutral-900/50">
             Songs ({songResults.length})
           </div>
-          {songResults.map((result, idx) => {
+          {songResults.map((result) => {
             const song = result.item as Song;
             const globalIndex = results.indexOf(result);
             const isSelected = globalIndex === selectedIndex;
@@ -159,7 +159,7 @@ export default function SearchResults({ onClose }: SearchResultsProps) {
           <div className="px-3 py-2 text-xs font-medium text-neutral-500 uppercase tracking-wider bg-neutral-900/50">
             Subreddits ({subredditResults.length})
           </div>
-          {subredditResults.map((result, idx) => {
+          {subredditResults.map((result) => {
             const subreddit = result.item as string;
             const globalIndex = results.indexOf(result);
             const isSelected = globalIndex === selectedIndex;

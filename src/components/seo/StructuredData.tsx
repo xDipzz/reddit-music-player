@@ -1,7 +1,5 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-
 interface Song {
   id: string;
   title: string;
@@ -15,8 +13,6 @@ interface StructuredDataProps {
 }
 
 export function StructuredData({ type = 'home', subreddit, songs }: StructuredDataProps) {
-  const pathname = usePathname();
-
   const getWebApplicationSchema = () => ({
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
@@ -87,12 +83,10 @@ export function StructuredData({ type = 'home', subreddit, songs }: StructuredDa
 
   const schemas = [];
 
-  // Always include web application schema on home page
   if (type === 'home') {
     schemas.push(getWebApplicationSchema());
   }
 
-  // Include playlist schema if songs are provided
   if (songs && songs.length > 0) {
     const playlistSchema = getMusicPlaylistSchema();
     if (playlistSchema) {
@@ -100,7 +94,6 @@ export function StructuredData({ type = 'home', subreddit, songs }: StructuredDa
     }
   }
 
-  // Include breadcrumb schema
   schemas.push(getBreadcrumbSchema());
 
   return (

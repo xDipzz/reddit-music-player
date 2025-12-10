@@ -3,3 +3,4 @@
 // ─────────────────────────────────────────────────────────────────
 
 export { YouTubeProvider, useYouTube } from './YouTubeProvider';
+export { ProgressBarProvider } from './ProgressBarProvider';

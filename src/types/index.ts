@@ -18,7 +18,7 @@ export interface Song {
   thumbnail: string | null;
   youtubeId: string | null;
   duration: number | null;
-  raw?: any;
+  raw?: Record<string, unknown>;
 }
 
 export interface Category {

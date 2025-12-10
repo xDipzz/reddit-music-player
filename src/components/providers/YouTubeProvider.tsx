@@ -1,8 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useYouTubePlayer } from '@/hooks/useYouTubePlayer';
-import { usePlayerStore } from '@/stores';
+import { usePlayerStore, usePlaylistStore } from '@/stores';
 import type { YouTubePlayerControls } from '@/types/youtube';
 import { YT } from '@/types/youtube';
 
@@ -24,8 +24,33 @@ interface YouTubeProviderProps {
   children: React.ReactNode;
 }
 
+const PLAYER_ELEMENT_ID = 'youtube-player-element';
+
 export function YouTubeProvider({ children }: YouTubeProviderProps) {
   const { setIsPlaying } = usePlayerStore();
+  const [isContainerReady, setIsContainerReady] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const playerRef = useRef<YouTubePlayerControls | null>(null);
+
+  // Client-side mounting check
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
+    // Wait for VideoPlayer component to create the element
+    const checkElement = setInterval(() => {
+      const element = document.getElementById(PLAYER_ELEMENT_ID);
+      if (element) {
+        clearInterval(checkElement);
+        setIsContainerReady(true);
+      }
+    }, 100);
+
+    return () => clearInterval(checkElement);
+  }, [isMounted]);
 
   const handleStateChange = (state: YT.PlayerState) => {
     switch (state) {
@@ -42,17 +67,51 @@ export function YouTubeProvider({ children }: YouTubeProviderProps) {
   };
 
   const handleError = (error: YT.ErrorCode) => {
-    if (error === YT.ErrorCode.InvalidParam) {
-      return;
+    // Error codes:
+    // 2 = Invalid video ID
+    // 5 = HTML5 player error
+    // 100 = Video not found or private
+    // 101/150 = Video not allowed to be played in embedded players
+    
+    console.warn('YouTube player error:', {
+      code: error,
+      currentSong: usePlayerStore.getState().currentSong?.title
+    });
+    
+    // For invalid video errors, skip to next song
+    if (error === 2 || error === 100 || error === 101 || error === 150) {
+      console.log('Invalid or unavailable video, will skip to next...');
+      // Give user a moment to see the error, then skip
+      setTimeout(() => {
+        const { queue, currentIndex } = usePlaylistStore.getState();
+        const player = playerRef.current;
+        
+        if (currentIndex < queue.length - 1 && player) {
+          // Skip to next song
+          const nextIndex = currentIndex + 1;
+          const nextSong = queue[nextIndex];
+          if (nextSong && nextSong.youtubeId) {
+            usePlayerStore.getState().setCurrentSong(nextSong);
+            usePlaylistStore.getState().setCurrentIndex(nextIndex);
+            if (player.isReady) {
+              player.loadVideo(nextSong.youtubeId);
+            }
+          }
+        }
+      }, 1500);
     }
-    console.error('YouTube player error:', error);
   };
 
-  const player = useYouTubePlayer('youtubePlayer', {
+  const player = useYouTubePlayer(isContainerReady ? PLAYER_ELEMENT_ID : '', {
     onStateChange: handleStateChange,
     onError: handleError,
     initialVolume: usePlayerStore.getState().volume,
   });
+
+  // Store player reference
+  useEffect(() => {
+    playerRef.current = player;
+  }, [player]);
 
   useEffect(() => {
     let prevVolume = usePlayerStore.getState().volume;
@@ -70,12 +129,6 @@ export function YouTubeProvider({ children }: YouTubeProviderProps) {
 
   return (
     <YouTubeContext.Provider value={{ player }}>
-      <div
-        id="youtubeContainer"
-        className="fixed -left-[9999px] w-1 h-1 overflow-hidden"
-      >
-        <div id="youtubePlayer" />
-      </div>
       {children}
     </YouTubeContext.Provider>
   );

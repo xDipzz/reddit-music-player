@@ -13,33 +13,37 @@ import {
 } from 'lucide-react';
 import { useSubredditStore } from '@/stores/subreddit-store';
 
-const SUBREDDIT_CATEGORIES = {
-  Electronic: {
-    icon: Zap,
-    color: '#8b5cf6',
-    subreddits: ['electronicmusic', 'house', 'techno', 'trance', 'edm', 'deephouse'],
-  },
-  'Hip Hop': {
-    icon: Mic2,
-    color: '#f59e0b',
-    subreddits: ['hiphopheads', 'rap', 'trapmuzik', 'makinghiphop'],
-  },
-  Rock: {
-    icon: Guitar,
-    color: '#ef4444',
-    subreddits: ['rock', 'indieheads', 'metal', 'punk', 'alternativerock'],
-  },
-  General: {
-    icon: Music,
-    color: '#10b981',
-    subreddits: ['listentothis', 'music', 'newmusic', 'letstalkmusic'],
-  },
-  Chill: {
-    icon: Cloud,
-    color: '#06b6d4',
-    subreddits: ['chillmusic', 'lofi', 'ambient', 'chillwave'],
-  },
+import { SUBREDDIT_DATABASE } from '@/data/subreddits';
+
+// Map icon strings to Lucide components
+const ICON_MAP: Record<string, React.ComponentType<any>> = {
+  'lucide:zap': Zap,
+  'lucide:mic': Mic2,
+  'lucide:guitar': Guitar,
+  'lucide:music': Music,
+  'lucide:cloud': Cloud,
+  'lucide:clock': Music,
+  'lucide:globe': Music,
+  'lucide:flame': Music,
+  'lucide:star': Music,
+  'lucide:sparkles': Music,
+  'lucide:video': Music,
+  'lucide:more-horizontal': Music,
 };
+
+// Convert database format to component format
+const SUBREDDIT_CATEGORIES = Object.fromEntries(
+  Object.entries(SUBREDDIT_DATABASE)
+    .filter(([_, cat]) => cat.name !== 'Video' && cat.name !== 'Other / Misc') // Exclude these for now
+    .map(([key, cat]) => [
+      cat.name,
+      {
+        icon: ICON_MAP[cat.icon] || Music,
+        color: cat.color,
+        subreddits: cat.subreddits.slice(0, 8), // Limit to 8 per category for UX
+      },
+    ])
+);
 
 export default function CategoryList() {
   const selectedSubreddits = useSubredditStore((state) => state.selectedSubreddits);

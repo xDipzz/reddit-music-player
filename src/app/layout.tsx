@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Inter, JetBrains_Mono } from "next/font/google";
 import { QueryProvider } from "@/components/providers/QueryProvider";
+import { ProgressBarProvider } from "@/components/providers";
 import { StructuredData } from "@/components/seo/StructuredData";
 import "./globals.css";
 
@@ -96,14 +97,15 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <StructuredData type="home" />
-        {/* Iconify for icons */}
-        <script src="https://code.iconify.design/3/3.1.0/iconify.min.js" async></script>
       </head>
       <body
         className={`${geistSans.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased font-sans selection:bg-white/20`}
         suppressHydrationWarning
       >
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <ProgressBarProvider />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

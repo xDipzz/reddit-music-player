@@ -3,7 +3,6 @@
 import React from 'react';
 import { Flame, Clock, TrendingUp, Zap } from 'lucide-react';
 import { useSubredditStore } from '@/stores/subreddit-store';
-import type { SortMethod } from '@/types';
 
 const SORT_OPTIONS = [
   { value: 'hot' as const, icon: Flame, label: 'Hot' },
