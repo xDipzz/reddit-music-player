@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Using Node.js runtime for better Reddit API compatibility
-// Edge runtime IPs are blocked by Reddit
+// Implements the same proxy strategy as the original reddit.musicplayer.io
+// Uses client's user-agent to bypass Reddit's bot detection
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -19,8 +20,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Build Reddit URL - use old.reddit.com which is more reliable for API access
-    let url = `https://old.reddit.com/r/${subreddits}/${sort}.json?limit=${limit}&raw_json=1`;
+    // Build Reddit URL - use www.reddit.com like the original
+    let url = `https://www.reddit.com/r/${subreddits}/${sort}.json?limit=${limit}&raw_json=1`;
     
     if (after) {
       url += `&after=${after}`;
@@ -30,21 +31,21 @@ export async function GET(request: NextRequest) {
       url += `&t=${timeframe}`;
     }
 
-    // Fetch from Reddit with full browser-like headers
+    // KEY: Use the client's user-agent (from their browser)
+    // This is what makes Reddit think it's a real user
+    const clientUserAgent = request.headers.get('user-agent') || 
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+
     console.log('Fetching from Reddit:', url);
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'User-Agent': clientUserAgent,  // Use CLIENT's user-agent, not server's!
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
         'DNT': '1',
         'Connection': 'keep-alive',
         'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Cache-Control': 'max-age=0',
       },
       next: { revalidate: 60 },
     });

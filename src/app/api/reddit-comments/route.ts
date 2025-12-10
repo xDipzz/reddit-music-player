@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Using Node.js runtime for better Reddit API compatibility
-// Edge runtime IPs are blocked by Reddit
+// Implements the same proxy strategy as the original reddit.musicplayer.io
+// Uses client's user-agent to bypass Reddit's bot detection
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -15,21 +16,21 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const url = `https://old.reddit.com${permalink}.json?raw_json=1`;
+    const url = `https://www.reddit.com${permalink}.json?raw_json=1`;
+
+    // KEY: Use the client's user-agent (from their browser)
+    const clientUserAgent = request.headers.get('user-agent') || 
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'User-Agent': clientUserAgent,  // Use CLIENT's user-agent!
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
         'DNT': '1',
         'Connection': 'keep-alive',
         'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Cache-Control': 'max-age=0',
       },
       next: { revalidate: 300 }, // Cache for 5 minutes
     });
