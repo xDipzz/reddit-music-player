@@ -18,8 +18,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Build Reddit URL - use reddit.com/.json which works better from serverless
-    let url = `https://www.reddit.com/r/${subreddits}/${sort}.json?limit=${limit}&raw_json=1`;
+    // Build Reddit URL - use old.reddit.com which is more reliable for API access
+    let url = `https://old.reddit.com/r/${subreddits}/${sort}.json?limit=${limit}&raw_json=1`;
     
     if (after) {
       url += `&after=${after}`;
@@ -29,24 +29,12 @@ export async function GET(request: NextRequest) {
       url += `&t=${timeframe}`;
     }
 
-    // Fetch from Reddit with proper headers
+    // Fetch from Reddit with proper headers - simplified for edge runtime
     console.log('Fetching from Reddit:', url);
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br, zstd',
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        'Sec-Ch-Ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-        'Sec-Ch-Ua-Mobile': '?0',
-        'Sec-Ch-Ua-Platform': '"Windows"',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'web:reddit-music-player:v1.0.0 (by /u/musicplayer)',
+        'Accept': 'application/json',
       },
       next: { revalidate: 60 },
     });
